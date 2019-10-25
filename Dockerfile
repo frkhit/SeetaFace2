@@ -1,9 +1,8 @@
-FROM ubuntu:18.04
-
+# build env 
+FROM ubuntu:18.04 as build_env 
 COPY 	. /SeetaFace2/
-
 RUN		apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libopencv-dev cmake && \
-		cd /SeetaFace2/ && mkdir -p build && cd build && \
+		cd /SeetaFace2/  && rm -r .git/ && mkdir -p build && cd build && \
 		cmake .. -DCMAKE_INSTALL_PREFIX=`pwd`/install -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLE=ON && \
 		cmake --build . --config Release && \
 		cmake --build .  --config Release --target install  && \
@@ -13,4 +12,9 @@ RUN		apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libopen
 		tar -xvf datfile.tar && mv datfile/* ./ && rm -r datfile/ && rm datfile.tar && \
 		rm -rf /var/lib/apt/lists/*
 
+# docker
+FROM ubuntu:18.04
+COPY --from=build_env /SeetaFace2 /
+RUN		apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libopencv-dev cmake && \
+		rm -rf /var/lib/apt/lists/*
 WORKDIR	/SeetaFace2/build/bin
