@@ -14,7 +14,7 @@ RUN		apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libopen
 
 # docker
 FROM ubuntu:18.04
-COPY --from=build_env /SeetaFace2 /
+COPY --from=build_env /SeetaFace2 /SeetaFace2/
 RUN		apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y libopencv-dev cmake && \
 		rm -rf /var/lib/apt/lists/*
 WORKDIR	/SeetaFace2/build/bin
